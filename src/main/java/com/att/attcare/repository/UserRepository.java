@@ -1,4 +1,4 @@
-package com.att.attcare.dao;
+package com.att.attcare.repository;
 
 import java.util.List;
 import java.util.Optional;

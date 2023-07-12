@@ -1,4 +1,4 @@
-package com.att.attcare.dao;
+package com.att.attcare.repository;
 
 import java.util.List;
 
@@ -13,5 +13,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByPatientId(Long patientId);
 
 	List<Appointment> findByDoctorAndDate(Doctor doctor, String appointmentDate);
+
+
+	List<Appointment> findByDoctor(Doctor doctor);
+
+	List<Appointment> findByDate(String date);
 }
 

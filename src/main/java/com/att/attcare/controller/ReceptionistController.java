@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.att.attcare.dao.ReceptionistRepository;
 import com.att.attcare.model.Doctor;
 import com.att.attcare.model.Patient;
 import com.att.attcare.model.Receptionist;
+import com.att.attcare.repository.ReceptionistRepository;
 import com.att.attcare.service.ReceptionistService;
 
 import io.swagger.v3.oas.annotations.Operation;

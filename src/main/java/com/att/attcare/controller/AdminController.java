@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ import com.att.attcare.service.ReceptionistService;
 @RestController
 @RequestMapping("/attcare/admin")
 @PreAuthorize("hasRole('ADMIN')")
-
+//@CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
 	private final AuthenticationService service;	
     private final DoctorService doctorService;
@@ -47,20 +48,22 @@ public class AdminController {
     	this.adminService=adminService;
     }
     
-	  @PostMapping("/register")
-	  public String register(
-	      @RequestBody @Valid RegisterRequest request
-	  ) {
-		  String email=request.getEmail();
-		  Optional<User> optionalUser=service.getUserByEmail(email);
-		  if(optionalUser.isPresent()) {
-			  return "Admin Already exists!";
-		  }
-		  else {
-			  service.register(request);
-			  return "Admin registered Successfully";
-		  }
-	  }
+    @PostMapping("/register")
+    public String register(
+        @RequestBody @Valid RegisterRequest request
+    ) {
+  	  String email=request.getEmail();
+  	  Optional<User> optionalUser=service.getUserByEmail(email);
+  	  if(optionalUser.isPresent()) {
+  		  return "Admin Already exists!";
+  	  }
+  	  else {
+  		  service.register(request);
+  		  return "Admin registered Successfully";
+  	  }
+    }
+
+    
 	  
 	  @PostMapping("/register-doctor")
 	  public String doctorRegister(
@@ -125,11 +128,6 @@ public class AdminController {
 		 * 
 		 * @Hidden public String post() { return "POST:: admin controller"; }
 		 * 
-		 * @PutMapping
-		 * 
-		 * @PreAuthorize("hasAuthority('admin:update')")
-		 * 
-		 * @Hidden public String put() { return "PUT:: admin controller"; }
 		 * 
 		 * @DeleteMapping
 		 * 
@@ -152,7 +150,7 @@ public class AdminController {
 	   
 	   @Transactional
 	   @DeleteMapping("/{id}")
-	    public void deleteDoctor(@PathVariable Long id) throws NotFoundException{
+	    public void deleteDoctor(@PathVariable int id) throws NotFoundException{
 	      adminService.deleteAdmin(id);
 	   }
 }

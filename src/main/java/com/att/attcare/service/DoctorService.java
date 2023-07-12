@@ -15,39 +15,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.att.attcare.auth.AuthenticationRequest;
 import com.att.attcare.auth.AuthenticationResponse;
 import com.att.attcare.controller.NotFoundException;
-import com.att.attcare.dao.DoctorRepository;
+import com.att.attcare.dao.DoctorDao;
 import com.att.attcare.model.Doctor;
 import com.att.attcare.model.Patient;
+import com.att.attcare.repository.DoctorRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @Service
 public class DoctorService {
-	private final DoctorRepository doctorRepository;
+	private final DoctorDao doctorRepository;
 
-	public DoctorService(DoctorRepository doctorRepository) {
+	public DoctorService(DoctorDao doctorRepository) {
 		this.doctorRepository = doctorRepository;
 	}
 
 	public List<Doctor> getAllDoctors() {
-		return doctorRepository.findAll();
+		return doctorRepository.getAll();
 	}
 
-	public ResponseEntity<Doctor> getDoctorById(Long id) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(id);
+	public ResponseEntity<Doctor> getDoctorById(int id) {
+		Optional<Doctor> optionalDoctor = doctorRepository.getById(id);
 		return optionalDoctor.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
 	public Optional<Doctor> getDoctorByEmail(String email) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findByEmail(email);
+		Optional<Doctor> optionalDoctor = doctorRepository.getByEmail(email);
 		return optionalDoctor;
 	}
 
 	
 	  public Doctor createDoctor(Doctor doctor) { 
 		 
-	  Doctor doctor1=doctorRepository.save(doctor);
+	  Doctor doctor1=doctorRepository.savedoctor(doctor);
 	  return doctor1; }
 	  
 	  
@@ -72,7 +73,7 @@ public class DoctorService {
 	 
 
 	public ResponseEntity<Doctor> updateDoctorByEmail(String email, Doctor updatedDoctor) {
-		Optional<Doctor> optionalDoctor = doctorRepository.findByEmail(email);
+		Optional<Doctor> optionalDoctor = doctorRepository.getByEmail(email);
 		if (optionalDoctor.isPresent()) {
 			Doctor doctor = optionalDoctor.get();
 			doctor.setName(updatedDoctor.getName());
@@ -80,17 +81,17 @@ public class DoctorService {
 			doctor.setSpecialization(updatedDoctor.getSpecialization());
 			doctor.setGender(updatedDoctor.getGender());
 			doctor.setMobile(updatedDoctor.getMobile());
-			doctorRepository.save(doctor);
+			doctorRepository.savedoctor(updatedDoctor);
 			return ResponseEntity.ok(doctor);
 		} else {
 			return ResponseEntity.notFound().build();
 		}
 	}
 
-	public void deleteDoctor(Long id) throws NotFoundException {
-		Optional<Doctor> optionalDoctor = doctorRepository.findById(id);
+	public void deleteDoctor(int id) throws NotFoundException {
+		Optional<Doctor> optionalDoctor = doctorRepository.getById(id);
 		if (optionalDoctor.isPresent()) {
-			doctorRepository.deleteById(id);
+			doctorRepository.delete(id);
 
 		} else {
 			throw new NotFoundException("doctor not found with id:" + id);

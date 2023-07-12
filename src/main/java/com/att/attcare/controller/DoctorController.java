@@ -52,7 +52,7 @@ public class DoctorController {
 	    }
 
 	   @GetMapping("/{id}")
-	    public ResponseEntity<Doctor> getDoctorById(@PathVariable  Long id) {
+	    public ResponseEntity<Doctor> getDoctorById(@PathVariable  int id) {
 	       
 	        return doctorService.getDoctorById(id);
 	    }
@@ -81,7 +81,7 @@ public class DoctorController {
 	   
 	   @Transactional
 	   @DeleteMapping("/{id}")
-	    public String deleteDoctor(@PathVariable Long id) throws NotFoundException{
+	    public String deleteDoctor(@PathVariable int id) throws NotFoundException{
 	      doctorService.deleteDoctor(id);
 	      return "Doctor removed successfully";
 	   }

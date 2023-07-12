@@ -1,10 +1,10 @@
 package com.att.attcare.auth;
 
 import com.att.attcare.config.JwtService;
-import com.att.attcare.dao.DoctorRepository;
-import com.att.attcare.dao.UserRepository;
 import com.att.attcare.model.Doctor;
 import com.att.attcare.model.User;
+import com.att.attcare.repository.DoctorRepository;
+import com.att.attcare.repository.UserRepository;
 import com.att.attcare.token.Token;
 import com.att.attcare.token.TokenRepository;
 import com.att.attcare.token.TokenType;

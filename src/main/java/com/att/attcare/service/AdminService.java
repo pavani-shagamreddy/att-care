@@ -7,35 +7,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.att.attcare.controller.NotFoundException;
-import com.att.attcare.dao.UserRepository;
+import com.att.attcare.dao.AdminDao;
 import com.att.attcare.model.User;
+import com.att.attcare.repository.UserRepository;
 
 
 
 @Service
 public class AdminService {
 
-	 private final UserRepository userRepository;
+	 private final AdminDao userRepository;
 
-	    public AdminService(UserRepository userRepository) {
+	    public AdminService(AdminDao userRepository) {
 	        this.userRepository = userRepository;
 	    }
 
 	    public List<User> getAllAdmins() {
-	        return userRepository.findAllByRole("ADMIN");
+	        return userRepository.getAllByRole("ADMIN");
 	    }
 
 	   
 	
 	    
 	    public Optional<User> getAdminByEmail(String email) {
-	        Optional<User> optionalAdmin = userRepository.findByEmail(email);
+	        Optional<User> optionalAdmin = userRepository.getByEmail(email);
 	        return optionalAdmin;
 	    }
 
 	   
 	    public ResponseEntity<User> updateAdmin(int id,  User updatedAdmin) {
-	        Optional<User> optionalAdmin = userRepository.findById(id);
+	        Optional<User> optionalAdmin = userRepository.getById(id);
 	        if (optionalAdmin.isPresent()) {
 	        	updatedAdmin.setId(id);
 				/*
@@ -48,7 +49,7 @@ public class AdminService {
 				 * doctor.setMobile(updatedDoctor.getMobile());
 				 * doctor.setExperience(updatedDoctor.getExperience());
 				 */
-	           userRepository.save(updatedAdmin);
+	           userRepository.saveuser(updatedAdmin);
 	            return ResponseEntity.ok(updatedAdmin);
 	        } else {
 	            return ResponseEntity.notFound().build();
@@ -58,10 +59,10 @@ public class AdminService {
 	   
 	   
 		
-		  public void deleteAdmin( Long id) throws NotFoundException{ Optional<User>
-		  optionalAdmin = userRepository.findById(id); 
+		  public void deleteAdmin( int id) throws NotFoundException{ 
+			  Optional<User> optionalAdmin = userRepository.getById(id); 
 		  if(optionalAdmin.isPresent()) {
-			  userRepository.deleteById(id);
+			  userRepository.delete(id);
 		  
 		  } else { 
 			  throw new NotFoundException("Admin not found with id:"+id); } }

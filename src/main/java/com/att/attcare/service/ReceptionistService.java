@@ -15,39 +15,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.att.attcare.auth.AuthenticationRequest;
 import com.att.attcare.auth.AuthenticationResponse;
-import com.att.attcare.dao.DoctorRepository;
-import com.att.attcare.dao.ReceptionistRepository;
+import com.att.attcare.dao.ReceptionistDao;
 import com.att.attcare.model.Doctor;
 import com.att.attcare.model.Patient;
 import com.att.attcare.model.Receptionist;
+import com.att.attcare.repository.DoctorRepository;
+import com.att.attcare.repository.ReceptionistRepository;
 
 @Service
 public class ReceptionistService {
-    private final ReceptionistRepository repository;
+    private final ReceptionistDao repository;
 
-    public ReceptionistService(ReceptionistRepository repository) {
+    public ReceptionistService(ReceptionistDao repository) {
         this.repository = repository;
     }
 
     public List<Receptionist> getAllReceptionists() {
-        return repository.findAll();
+        return repository.getAll();
     }
 
    
     public ResponseEntity<Receptionist> getReceptionistById(Long id) {
-        Optional<Receptionist> optionalReceptionist = repository.findById(id);
+        Optional<Receptionist> optionalReceptionist = repository.getById(id);
         return  optionalReceptionist.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     public Receptionist createReceptionist(Receptionist receptionist) {
         // Perform any necessary validation or business logic
-    	Receptionist r=repository.save(receptionist);
+    	Receptionist r=repository.saveReceptionist(receptionist);
         return r;
     }
 
    
     public ResponseEntity<Receptionist> updateReceptionist(Long id,  Receptionist updatedReceptionist) {
-        Optional<Receptionist>  optionalReceptionist = repository.findById(id);
+        Optional<Receptionist>  optionalReceptionist = repository.getById(id);
         if ( optionalReceptionist.isPresent()) {
             Receptionist receptionist = optionalReceptionist.get();
             receptionist.setName(updatedReceptionist.getName());
@@ -55,7 +56,7 @@ public class ReceptionistService {
             receptionist.setPassword(updatedReceptionist.getPassword());
   
             receptionist.setMobile(updatedReceptionist.getMobile());
-           repository.save(receptionist);
+           repository.saveReceptionist(updatedReceptionist);
             return ResponseEntity.ok(receptionist);
         } else {
             return ResponseEntity.notFound().build();
@@ -63,7 +64,7 @@ public class ReceptionistService {
     }
     
     public ResponseEntity<Receptionist> updateReceptionistByEmail(String email,  Receptionist updatedReceptionist) {
-        Optional<Receptionist>  optionalReceptionist = repository.findByEmail(email);
+        Optional<Receptionist>  optionalReceptionist = repository.getByEmail(email);
         if ( optionalReceptionist.isPresent()) {
             Receptionist receptionist = optionalReceptionist.get();
             receptionist.setName(updatedReceptionist.getName());
@@ -71,7 +72,7 @@ public class ReceptionistService {
             receptionist.setPassword(updatedReceptionist.getPassword());
   
             receptionist.setMobile(updatedReceptionist.getMobile());
-           repository.save(receptionist);
+           repository.saveReceptionist(updatedReceptionist);
             return ResponseEntity.ok(receptionist);
         } else {
             return ResponseEntity.notFound().build();
@@ -80,9 +81,9 @@ public class ReceptionistService {
     
  
     public String deleteReceptionist( Long id) {
-        Optional<Receptionist> optionalReceptionist = repository.findById(id);
+        Optional<Receptionist> optionalReceptionist = repository.getById(id);
         if (optionalReceptionist.isPresent()) {
-            repository.deleteById(id);
+            repository.delete(id);
             return "Receptionist removed successfully";
         } else {
             return "Receptionist not found";
@@ -90,7 +91,7 @@ public class ReceptionistService {
     }
 
 	public Optional<Receptionist> getReceptionistByEmail(String email) {
-		Optional<Receptionist> optionalReceptionist=repository.findByEmail(email);
+		Optional<Receptionist> optionalReceptionist=repository.getByEmail(email);
 		return optionalReceptionist;
 	}
     

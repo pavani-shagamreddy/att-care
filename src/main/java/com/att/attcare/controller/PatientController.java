@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.att.attcare.dao.PatientRepository;
 import com.att.attcare.model.Patient;
+import com.att.attcare.repository.PatientRepository;
+import com.att.attcare.service.PatientService;
 
 import jakarta.validation.Valid;
 
@@ -27,58 +28,36 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/attcare/patients")
 public class PatientController {
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
 
-    public PatientController(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
    
     @GetMapping
     public List<Patient> getAllPatients() {
-        return patientRepository.findAll();
+        return patientService.getAllPatients();
     }
 
     @GetMapping("/{id}")
     //@PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
-        return optionalPatient.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+       return patientService.getPatientById(id);
     }
 
     @PostMapping
     public ResponseEntity<Patient> createPatient(@RequestBody @Valid Patient patient) {
-        // Parse the date string into a LocalDate object
-       
-        Patient savedPatient = patientRepository.save(patient);
-        return ResponseEntity.ok(savedPatient);
+     return patientService.createPatient(patient);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @RequestBody @Valid Patient updatedPatient) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
-        if (optionalPatient.isPresent()) {
-            Patient patient = optionalPatient.get();
-           patient.setName(updatedPatient.getName());
-           patient.setAge(updatedPatient.getAge());
-           patient.setEmail(updatedPatient.getEmail());
-           patient.setGender(updatedPatient.getGender());
-           patient.setMobile(updatedPatient.getMobile());
-           patientRepository.save(patient);
-            return ResponseEntity.ok(patient);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+       return patientService.updatePatient(id, updatedPatient);
     }
 
     @DeleteMapping("/{id}")
     public String deletePatient(@PathVariable Long id) {
-        Optional<Patient> optionalPatient = patientRepository.findById(id);
-        if (optionalPatient.isPresent()) {
-            patientRepository.deleteById(id);
-            return "Patient removed successfully";
-        } else {
-            return "Patient not found";
-        }
+     return patientService.deletePatient(id);
     }
 }
